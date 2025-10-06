@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Historic News Today</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts and Animate.css -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1 class="site-title animate__animated animate__fadeInDown">Historic News Today</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">World</a>
+      <a href="#">Science</a>
+      <a href="#">Politics</a>
+    </nav>
+  </header>
+
+  <section class="ticker">
+    <ul id="news-ticker">
+      <!-- JS will populate -->
+    </ul>
+  </section>
+
+  <main>
+    <section class="featured-news" id="featured-news">
+      <!-- JS: main news card inserted here -->
+    </section>
+    <h2 class="updates-title">Earlier Updates</h2>
+    <div class="updates-grid" id="updates-grid">
+      <!-- JS: update cards inserted here -->
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Historic News Today – Real Headlines from the Past</p>
+  </footer>
+  <script>
+  // Array of news updates (add as many as you like)
+  const newsPool = [
+    {
+      title: "Kennedy Is Killed By Sniper",
+      desc: "President Kennedy is assassinated in Dallas, Texas. Lyndon Johnson is sworn in as President.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/d/d8/JFK_limousine_after_shooting.jpg",
+      date: "Nov 22, 1963",
+      tag: "Politics"
+    },
+    {
+      title: "Titanic Sinks After Hitting Iceberg",
+      desc: "RMS Titanic sinks in the North Atlantic after striking an iceberg; over 1,250 dead.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/6/67/Titanic_-_Iceberg.jpg",
+      date: "April 16, 1912",
+      tag: "World"
+    },
+    {
+      title: "Man Walks On The Moon",
+      desc: "Neil Armstrong becomes the first person to step on the Moon: 'That's one small step for man.'",
+      img: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Apollo_11_Lunar_Module_on_the_Moon.jpg",
+      date: "July 21, 1969",
+      tag: "Science"
+    },
+    {
+      title: "Nixon Resigns Presidency",
+      desc: "President Nixon resigns in the aftermath of the Watergate scandal. Gerald Ford is sworn in.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/7/75/Nixon_Resignation_Speech.png",
+      date: "Aug 9, 1974",
+      tag: "Politics"
+    },
+    {
+      title: "First Email Sent",
+      desc: "The first electronic mail message is sent between two computers by Ray Tomlinson.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/4/4e/ARPANET_Logical_Map_March_1977.png",
+      date: "1971",
+      tag: "Technology"
+    },
+    {
+      title: "Berlin Wall Falls",
+      desc: "Celebrations erupt as the Berlin Wall separating East and West Germany is brought down.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Berlin_Wall_Brandenburg_Gate.jpg",
+      date: "Nov 9, 1989",
+      tag: "World"
+    },
+    {
+      title: "DNA Structure Discovered",
+      desc: "Watson and Crick unveil the double-helix structure of DNA, revolutionizing biology.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/2/2d/DNA_Overview.png",
+      date: "April 25, 1953",
+      tag: "Science"
+    }
+  ];
+
+  // Deterministic PRNG (Mulberry32)
+  function mulberry32(seed) {
+    return function() {
+      var t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+
+  // Randomized, synced update interval + shuffled pool
+  function getNewsState() {
+    const now = new Date();
+    const epochMinutes = Math.floor(now.getTime() / 60000);
+    const epochHours = Math.floor(epochMinutes / 60);
+    const intervalPRNG = mulberry32(epochHours);
+    const interval = 10 + Math.floor(intervalPRNG() * 51);
+    const minOfHour = epochMinutes % 60;
+    const blockIndex = Math.floor(minOfHour / interval);
+    const newsPRNG = mulberry32(epochHours * 100 + blockIndex);
+    // Deterministically shuffle (Fisher-Yates) for this block
+    const shuffled = [...newsPool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(newsPRNG() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    // Main headline is first, previous (up to 4) are next
+    const msUntilNext =
+      ((blockIndex + 1) * interval - minOfHour) * 60 * 1000 - (now.getSeconds() * 1000 + now.getMilliseconds());
+    return {
+      current: shuffled[0],
+      ticker: shuffled.slice(0, 5).map(n => n.title),
+      previous: shuffled.slice(1, 5),
+      msUntilNext: msUntilNext
+    };
+  }
+
+  // Render main news
+  function renderMain(news) {
+    featuredNews.innerHTML = `
+      <article class="main-news-card animate__animated animate__fadeInUp">
+        <img src="${news.img}" alt="">
+        <div class="main-card-body">
+          <span class="news-tag">${news.tag}</span>
+          <h2>${news.title}</h2>
+          <p>${news.desc}</p>
+          <span class="card-date">${news.date}</span>
+        </div>
+      </article>
+    `;
+  }
+
+  // Render past updates
+  function renderUpdates(updates) {
+    updatesGrid.innerHTML = updates.map(news => `
+      <div class="news-card animate__animated animate__fadeIn">
+        <img src="${news.img}" alt="">
+        <div class="card-body">
+          <div class="news-tag">${news.tag}</div>
+          <h3>${news.title}</h3>
+          <p>${news.desc}</p>
+          <span class="card-date">${news.date}</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // Render headline ticker
+  function renderTicker(tickerArr) {
+    newsTicker.innerHTML = tickerArr.map(t => `<li>${t}</li>`).join("");
+    newsTicker.style.animation = "none";
+    newsTicker.offsetHeight; // reflow
+    newsTicker.style.animation = null;
+  }
+
+  // Main update
+  function updatePage() {
+    const { current, ticker, previous, msUntilNext } = getNewsState();
+    renderMain(current);
+    renderUpdates(previous);
+    renderTicker(ticker);
+    setTimeout(updatePage, msUntilNext+1000);
+  }
+
+  // Cache elements
+  const featuredNews = document.getElementById("featured-news");
+  const updatesGrid = document.getElementById("updates-grid");
+  const newsTicker = document.getElementById("news-ticker");
+  document.addEventListener("DOMContentLoaded", updatePage);
+  </script>
+</body>
+</html>

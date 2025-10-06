@@ -1,0 +1,206 @@
+/* styles.css */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background: #f5f7fb;
+  color: #222;
+}
+header {
+  background: #172554;
+  color: #fff;
+  padding: 2rem 1rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-title {
+  margin: 0 0 1rem 0;
+  letter-spacing: 1px;
+  font-weight: 700;
+  font-size: 2.2rem;
+}
+nav a {
+  color: #9adcff;
+  text-decoration: none;
+  margin: 0 1.5rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  transition: background 200ms;
+}
+nav a:hover {
+  background: #253054;
+}
+.ticker {
+  margin-top: 8px;
+  background: #233145;
+  color: #fff;
+  overflow: hidden;
+  height: 2.1rem;
+}
+#news-ticker {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  padding-left: 14px;
+  font-weight: 500;
+  animation: ticker-scroll 22s linear infinite;
+  gap: 3rem;
+}
+#news-ticker li {
+  display: inline-block;
+  min-width: 260px;
+  padding-right: 12px;
+  font-size: 1.02rem;
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0);}
+  100% { transform: translateX(-65%);}
+}
+.featured-news {
+  max-width: 900px;
+  margin: 2.5rem auto 0.5rem auto;
+  padding: 0 1.1rem;
+}
+.main-news-card {
+  display: flex;
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 32px rgba(68,93,123,0.13);
+  overflow: hidden;
+  min-height: 280px;
+  align-items: stretch;
+  transition: box-shadow 200ms, transform 200ms;
+}
+.main-news-card:hover {
+  box-shadow: 0 8px 44px rgba(68,93,123,0.22);
+  transform: translateY(-5px) scale(1.01);
+}
+.main-news-card img {
+  flex: 2;
+  object-fit: cover;
+  width: 50%;
+  min-width: 280px;
+  height: auto;
+  max-height: 320px;
+}
+.main-card-body {
+  flex: 4;
+  padding: 2.1rem 1.6rem 1.4rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.main-card-body h2 {
+  font-size: 2rem;
+  margin: 0 0 0.8rem 0;
+  color: #153151;
+  font-weight: 700;
+}
+.main-card-body p {
+  margin: 0.5rem 0 1.3rem 0;
+  font-size: 1.13rem;
+}
+.news-tag {
+  background: #bcdcff;
+  color: #314865;
+  border-radius: 44px;
+  padding: 0.3rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  width: fit-content;
+  margin-bottom: 0.6rem;
+}
+.card-date {
+  color: #7491b2;
+  font-size: 1.02em;
+  margin-top: auto;
+  align-self: flex-end;
+}
+.updates-title {
+  margin: 2rem auto 1rem auto;
+  text-align: center;
+  color: #3454a1;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.updates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.8rem;
+  max-width: 1040px;
+  margin: 0 auto 3rem auto;
+  padding: 0 1.1rem;
+}
+.news-card {
+  background: #fff;
+  border-radius: 1.1rem;
+  box-shadow: 0 4px 18px rgba(68,93,123,0.11);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  cursor: pointer;
+  transition: box-shadow 200ms, transform 200ms;
+}
+.news-card:hover {
+  box-shadow: 0 8px 27px rgba(68,93,123,0.19);
+  transform: translateY(-6px) scale(1.018);
+}
+.news-card img {
+  width: 100%;
+  height: 148px;
+  object-fit: cover;
+}
+.card-body {
+  padding: 1.08rem 1.1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.card-body h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.15rem;
+  color: #173050;
+}
+.card-body p {
+  font-size: 0.97rem;
+  margin: 0 0 0.75rem 0;
+  color: #3b4857;
+}
+.card-body .news-tag {
+  margin-bottom: 0.5rem;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.78rem;
+  background: #e6f1ff;
+  color: #2e5d87;
+}
+footer {
+  text-align: center;
+  background: #172554;
+  color: #e3f6ff;
+  padding: 1.3rem 0 0.5rem;
+  font-size: 1rem;
+  margin-top: 3rem;
+}
+@media (max-width: 900px) {
+  .main-news-card {
+    flex-direction: column;
+  }
+  .main-news-card img {
+    width: 100%;
+    min-width: 180px;
+    max-height: 220px;
+  }
+}
+@media (max-width: 600px) {
+  .featured-news, .updates-grid {
+    padding: 0 0.4rem;
+  }
+  .main-card-body {
+    padding: 1.1rem 0.7rem 1rem 0.6rem;
+  }
+}
